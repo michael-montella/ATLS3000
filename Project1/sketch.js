@@ -15,14 +15,19 @@ var clintonX = 200;
 
 var votes = [];
 
-var gameover = false;
+var gameOver = false;
 
+var trumpLeft = false;
+var clintonLeft = false;
 
 function preload() {
+  //Loads images
+  
   trump = loadImage("trump.png");
   trump2 = loadImage("trump2.png");
   clinton = loadImage("clinton.png");
   clinton2 = loadImage("clinton2.png");
+  debateStage = loadImage("debateStage.jpg");
 }
 
 function setup() {
@@ -30,6 +35,8 @@ function setup() {
 
   background(255);
   fill(0);
+  
+  //Top text for each candidate
   text("Hillary Clinton", 15, 30);
   text("Donald Trump", width - 100, 30);
 
@@ -55,6 +62,7 @@ function draw() {
   trumpX += trumpSpeed;
   clintonX += clintonSpeed;
 
+  //Doesn't let characters go off screen
   if (trumpX >= 1166) {
     trumpSpeed = 0;
     trumpX = 1166;
@@ -71,41 +79,56 @@ function draw() {
     clintonX = 0;
   }
 
-  image(trump, trumpX, 595);
-  image(clinton, clintonX, 595);
+
+  // Changes images based on which direction they're moving
+  if(trumpLeft) {
+    image(trump2, trumpX, 595);
+  } else {
+    image(trump, trumpX, 595);
+  }
+  
+  if(clintonLeft) {
+    image(clinton2, clintonX, 595);
+  } else {
+    image(clinton, clintonX, 595);
+  }
 
   // Hitboxes
   noFill();
   ellipse(trumpX + 60, 625, 50, 50);
   ellipse(clintonX + 60, 625, 50, 50);
 
-  if (!gameover) {
+  if (!gameOver) {
     for (var i = 0; i < votes.length; i++) {
       votes[i].show();
       votes[i].move();
 
       if (votes[i].hit(trumpX + 60, 625)) {
         votes[i].count();
-        if (trumpVotes < 625) {
-          trumpVotes += 20;
+        //Decides how many votes to add based on size of dot
+        var newVotes = Math.round(votes[i].r);
+        if (trumpVotes < 620) {
+          trumpVotes += newVotes;
         } else {
           gameOver = true;
+
         }
       } else if (votes[i].hit(clintonX + 60, 625)) {
         votes[i].count();
-        if (clintonVotes < 625) {
-          clintonVotes += 20;
+        var newVotes = Math.round(votes[i].r);
+        if (clintonVotes < 620) {
+          clintonVotes += newVotes;
         } else {
           gameOver = true;
         }
       }
     }
-  }
-
-  if (gameover) {
+  } else {
+    // If the game is finished, splice all dots from array
     for (var x = 0; x < votes.length; x++) {
       votes.splice(x, 1);
     }
+    gameFinished();
   }
 
   for (var w = votes.length - 1; w >= 0; w--) {
@@ -119,22 +142,38 @@ function draw() {
       }
     }
   }
-
 }
 
 function keyPressed() {
   if (keyCode == LEFT_ARROW && trumpX >= 11) {
     trumpSpeed -= 1;
+    trumpLeft = true;
   } else if (keyCode == RIGHT_ARROW && trumpX <= 1166) {
     trumpSpeed += 1;
+    trumpLeft = false;
   }
 
   if (keyCode == 65 && clintonX >= 0) {
     clintonSpeed -= 1;
+    clintonLeft = true;
   } else if (keyCode == 68 && clintonX <= 1166) {
     clintonSpeed += 1;
+    clintonLeft = false;
   }
+}
 
-
-
+function gameFinished() {
+  fill(0);
+  textAlign(CENTER);
+  textSize(72);
+  if (trumpVotes > clintonVotes) {
+    println("Trump wins");
+    text("Donald Trump wins the election!", width/2, height/2);
+  } else if (clintonVotes > trumpVotes) {
+    println("Clinton wins");
+    text("Hillary Clinton wins the election!", width/2, height/2);
+  } else {
+    println("Its a tie");
+    text("The election results in a tie!", width/2, height/2);
+  }
 }
