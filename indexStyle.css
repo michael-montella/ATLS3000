@@ -1,0 +1,54 @@
+html {
+}
+
+body {
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+}
+
+.nameLink:link {
+    font-size: 2em;
+    color: #cccccc;
+    padding-top: 10px;
+}
+
+.nameLink:visited {
+    color: #cccccc;
+}
+
+.nameLink:hover {
+    color: #999999;
+}
+
+
+#header2 {
+    font-size: 2.5em;
+    color: #cccccc;
+    line-height: 0.5em;
+}
+
+a:link {
+    color: #29CBF3;
+    font-family: Helvetica, sans-serif;
+    text-decoration: none;
+    font-size: 1.7em;
+}
+
+a:visited {
+    color: #297CF3;
+}
+
+a:hover {
+    color: #00B2FF;
+}
+
+a:active {
+    color: #0083FF
+}
+
+div {
+    background: rgba(0, 0, 0, 0.7);
+    width: 50%;
+    margin: 0 auto;
+    padding-bottom: 10px;
+}
