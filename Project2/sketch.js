@@ -8,6 +8,7 @@ var yearCol = 6;
 var latitudeCol = 7;
 var longitudeCol = 8;
 var massCol = 4;
+var foundCol = 5;
 var maxMass = 0;
 
 var years = [];
@@ -61,13 +62,12 @@ function draw() {
 
 function showMap() {
   for (var i = 0; i < table.getRowCount(); i++) {
-    
+
     // Get latitude and longitude from table
     var latitude = parseFloat(table.getString(i, latitudeCol));
     var longitude = parseFloat(table.getString(i, longitudeCol));
-    var colorLat = latitude;
-    var colorLong = longitude;
-    
+    var fall = table.getString(i, foundCol);
+
     latitude *= -1; // Inverts Latitude to work in p5
 
     // Changes size of map based on window size
@@ -77,22 +77,30 @@ function showMap() {
     // Maps latitude and longitude to fit on map
     latitude = map(latitude, -90, 90, 0, mapHeight);
     longitude = map(longitude, -180, 180, 0, mapWidth);
-    
-    // Maps latitude to color range
-    colorLat = map(colorLat, -90, 90, 0, 255);
-    
+
+    // Sets fill based on if meteorite was found or if it fell
+    if (fall == "Fell") {
+      fill(255, 0, 0);
+    } else {
+      fill(0, 0, 255);
+    }
+
     noStroke();
-    fill(colorLat, 0, 255 - colorLat);
     ellipse(longitude, latitude, 6, 6);
-    
-    
+
+
   }
-  
+
   fill(0);
   textAlign(CENTER);
   textFont(font);
   textSize(24);
-  text("Location of landings", mapWidth/2, mapHeight + 30);
+  text("Location of landings", mapWidth / 2, mapHeight + 30);
+  textSize(18);
+  fill(255, 0, 0);
+  text("Fell", mapWidth / 2, mapHeight + 60);
+  fill(0, 0, 255);
+  text("Found", mapWidth / 2, mapHeight + 90);
 }
 
 // Creates bar graphs
@@ -101,14 +109,14 @@ function barGraphs() {
   textFont(font);
   textSize(24);
   noStroke();
-  
+
   push();
   fill(0);
   textAlign(LEFT);
   translate(100, -20);
-  text("Years with most meteorite landings", 0, 0);
+  text("Years with most meteorite discoveries", 0, 0);
   pop();
-  
+
   // Create year label
   for (var i = 0; i < 5; i++) {
     push();
@@ -117,7 +125,7 @@ function barGraphs() {
     text(yearCount[i], 75 / 2, 0);
     pop();
   }
-  
+
   // Create rectangle and # of landings label
   for (var i = 0; i < 5; i++) {
     push();
@@ -138,7 +146,7 @@ function barGraphs() {
 }
 
 function showData() {
-  var totalData = table.getRowCount();    // Total rows of data
+  var totalData = table.getRowCount(); // Total rows of data
 
   textAlign(LEFT);
   textFont(font);
@@ -149,7 +157,7 @@ function showData() {
 
   text("Earliest known landing: 861ad", 0, 100);
 
-  text("Largest mass: " + maxMass/1000 + "kg", 0, 150);
+  text("Largest mass: " + maxMass / 1000 + "kg", 0, 150);
 }
 
 // Creates arrays
